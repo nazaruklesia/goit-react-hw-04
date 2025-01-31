@@ -1,8 +1,6 @@
 import { useState } from "react"
 import toast from "react-hot-toast"
 import s from "./SearchBar.module.css"
-
-
 const SearchBar = ({ onSubmit }) => {
     const [query, setQuery] = useState("");
 
@@ -12,14 +10,12 @@ const SearchBar = ({ onSubmit }) => {
         e.preventDefault()
         const searchQuery = query.trim();
         if (!searchQuery) {
-
-            toast.error("Please enter a search term")
+            toast.error("No image name entered. Please fill in the search field.")
             return;
         }
         onSubmit(searchQuery);
         setQuery("");
     }
-
     return (
         <header >
             <form  className={s.form} onSubmit={handleSabmit}>

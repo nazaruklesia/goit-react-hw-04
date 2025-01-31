@@ -17,3 +17,7 @@ background: linear-gradient(135deg, rgba(157, 94, 21, 0.4) 30%, rgba(89, 56, 0, 
 backdrop-filter: blur(10px);
  
 }
+
+.hidden {
+  display: none;
+}
