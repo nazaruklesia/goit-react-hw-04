@@ -1,4 +1,3 @@
-
 import './App.css'
 import SearchBar from './components/SearchBar/SearchBar'
 import {pullImages} from './api.js'
@@ -7,8 +6,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import ImageGallery from './components/ImageGallery/ImageGallery.jsx'
 import Loader from './components/Loader/Loader.jsx'
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn.jsx'
-
-
+import ErrorMessage from './components/ErrorMessage/ErrorMessage.jsx'
 
 
 
@@ -19,7 +17,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [chosenImage, setChosenImage] = useState(null);
-  const [totalPage, setTotalPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   
   const handleSearch = (newQuery) => {
@@ -30,39 +28,34 @@ function App() {
   }
 
   useEffect(() => {
+     console.log("Current Page:", page, "Total Pages:", totalPages);
     if (!query) {
       return;
     }
+
+
+
     const getImages = async () => {
       setIsLoading(true);
       setError(null);
 
-      try {
-        const { results, total_page, } = await pullImages(query, page);
-        setImages((prev) => (page === 1 ? results : [...prev, ...results]));
-        setTotalPage(total_page)
+   try {
+     const { results, total_pages } = await pullImages(query, page);
+    setImages(prev => [...(page === 1 ? [] : prev), ...results]);
+    setTotalPages(total_pages > 1 ? total_pages : page + 1);
+} catch (error) {
+    setError(true);
+} finally {
+    setIsLoading(false);
+}
 
-
-      } catch (error) {
-        setError("Image request failed. Please try again.");
-          toast.error("Image request failed. Please try again.");
-        
-        
-      } finally {
-        setIsLoading(false)
-      }
-      
     };
     getImages();
-   
   }, [query, page]);
   
-  const handleLoadMore = () => setPage((prev) => prev + 1);
-  const handleEmageClick = (image) => setChosenImage(image);
+  const handleLoadMore = () => setPage((prev) =>  prev + 1);
+  const handleImageClick = (image) => setChosenImage(image);
   const handleCloseModal = () => setChosenImage(null);
-
-  
-
 
   return (
 
@@ -70,19 +63,11 @@ function App() {
       <SearchBar onSubmit={handleSearch} />
       <Toaster/>
       {error && <ErrorMessage message= {error} />}
-      <ImageGallery images={ images} onImageClick={handleSearch}/>
+      <ImageGallery images={ images} onImageClick={handleImageClick}/>
           
-
         {isLoading && <Loader/>}
-      {images.length > 0 && page < totalPage && (
-        <LoadMoreBtn onClick={handleLoadMore} />
-          // <button onClick={() => setPage((prev) => prev + 1)}>
-          //   Load more
-          // </button>
-        )}
-        
+     {images.length > 0 && page < totalPages && ( <LoadMoreBtn onClick={handleLoadMore} />)}
       </div>
-
 
   );
 }

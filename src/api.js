@@ -8,19 +8,21 @@ export const pullImages = async (query, page = 1) => {
     try {
         const response = await axios.get(BASE_URL, {
             params: {
-                orientation: "landscape",
+                orientation: "squarish",
                 updated_at: "desc",
                 query: query,
                 page,
-                per_page: 14,
+                per_page: 20,
                 client_id: MY_ACCESS_KEY
             }
 
 
         })
-        return response.data;
+        return response.data
+        
     } catch (error) {
         throw new Error("Image request failed");
     }
+    
      
 };

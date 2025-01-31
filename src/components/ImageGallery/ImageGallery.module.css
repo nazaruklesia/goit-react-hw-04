@@ -1,0 +1,6 @@
+.gallary{
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+   gap: 10px;   
+}
